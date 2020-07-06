@@ -1,0 +1,32 @@
+---
+title: "TRY IN CLASS"
+author: "QUKANGJIE"
+date: "2020/7/6"
+output: html_document
+---
+*HEY,MEN.*   **I'M HIGH.**
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# R Markdown Today
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+## DON'T SHY.
+YEP.  
+A friend once said:
+
+> It's always better to give 
+> than to receive.
+
+1. HALO
+2. YES,I AM.
+3. NOT TODAY
+    + MAYBE TOMORROW.
+    + MAYBE DEATH.
+```{r}
+x<-1:15
+```
+
