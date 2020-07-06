@@ -1,0 +1,38 @@
+---
+title: "Chapter 3 Excercise"
+date: "7/8/2020"
+output: html_document
+---
+
+```{r setup, message = F, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+### Exercise 
+1. Using the `se` dataset, make a scatterplot showing visitation to all national parks in the Southeast region with color identifying individual parks.
+```{r message = F}
+se <- read_csv('data/se.csv')
+
+ggplot(data = se) +
+  geom_point(aes(x = year, y = visitors, color = park_name))
+```
+
+2. Change the plot so that color indicates `state`.
+
+3. Customize by adding your own title and theme. You can also change the text sizes and angles. Try applying a 45 degree angle to the x-axis. Use your cheatsheet!
+```{r}
+# 2. & 3.
+ggplot(data = se) +
+  geom_point(aes(x = year, y = visitors, color = state)) +
+  labs(x = "Year",
+       y = "Visitation",
+       title = "Southeast States National Park Visitation") +
+  theme_light() +
+  theme(legend.title = element_blank(),
+        axis.text.x = element_text(angle = 45, hjust = 1, size = 14))
+```
+
+4. In the code below, why isn’t the data showing up?
+
+**The code is missing a geom to describe how the data should be plotted.**
