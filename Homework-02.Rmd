@@ -1,6 +1,8 @@
 ---
 title: "Homework 2"
-output: pdf_document
+output:
+  html_document:
+    df_print: paged
 ---
 ```{r setup, message = F, include=FALSE}
 options(htmltools.dir.version = FALSE)

@@ -1,69 +1,136 @@
 ---
-title: "Homework 1"
-output: pdf_document
+output:
+  pdf_document: default
+  html_document: default
 ---
+    ---
+    title: "Homework 1"
+    author: "瞿康洁"
+    date: "2020/07/10"
+        pdf_document: 
+    latex_engine: xelatex
+    ---
+    
 ```{r setup, message = F, include=FALSE}
 options(htmltools.dir.version = FALSE)
 library(tidyverse)
+library(tinytex)
 library(DAAG)
+library(showtext)
+library(devtools)
 ```
 
 1. The Iowa data set iowa.csv is a toy example that summarises the yield of wheat (bushels per acre) for the state of Iowa between 1930-1962. In addition to yield, year, rainfall and temperature were recorded as the main predictors of yield.
-    a. First, we need to load the data set into R using the command `read.csv()`. Use the help function to learn what arguments this function takes. Once you have the necessary input, load the data set into R and make it a data frame called `iowa.df`.
-    b. How many rows and columns does `iowa.df` have? 
-    c. What are the names of the columns of `iowa.df`?
-    d. What is the value of row 5, column 7 of `iowa.df`?
-    e. Display the second row of `iowa.df` in its entirety.
+a. First, we need to load the data set into R using the command `read.csv()`. Use the help function to learn what arguments this function takes. Once you have the necessary input, load the data set into R and make it a data frame called `iowa.df`.
 ```{r}
-iowa.df<-read.csv("data/iowa.csv",header=T)
+iowa.df<-read.csv("data/iowa.csv",header=T,sep = ";")
 ```
-2. Syntax and class-typing.
-    a. For each of the following commands, either explain why they should be errors, or explain the non-erroneous result.
+b. How many rows and columns does `iowa.df` have?
+```{r}
+nrow(iowa.df)
+ncol(iowa.df)
+```
+c. What are the names of the columns of `iowa.df`?
+```{r}
+names(iowa.df)
+```
+d. What is the value of row 5, column 7 of `iowa.df`?
+```{r}
+iowa.df[5,7]
+```
+e. Display the second row of `iowa.df` in its entirety.
+```{r}
+iowa.df[2,]
+```
 
-```
+2. Syntax and class-typing.
+a. For each of the following commands, either explain why they should be errors, or explain the non-erroneous result.
+```{r}
 vector1 <- c("5", "12", "7", "32")
+```
+这条命令非错误，将数字作为字符赋值给字符向量。
+```{r}
 max(vector1)
+```
+这条命令非错误，将向量内字符字典排序，取最后一个字符，得出结果字符`"7"`。
+```{r}
 sort(vector1)
+```
+这条命令非错误，将向量内字符字典排序，得出结果`"12" "32" "5"  "7"`。
+```
 sum(vector1)
 ```
+这条命令错误，`sum`函数变量不适用于字符型。
 
-    b. For the next series of commands, either explain their results, or why they should produce errors.
+b. For the next series of commands, either explain their results, or why they should produce errors.
 
-```
+```{r}
 vector2 <- c("5",7,12)
+```
+类型不一致，按照字符储存。
+```
 vector2[2] + vector2[3]
-
+```
+向量为字符向量，二进列运算符中有非数值参数。
+```{r}
 dataframe3 <- data.frame(z1="5",z2=7,z3=12)
+```
+数据结构储存时保持数据原类型。
+```{r}
 dataframe3[1,2] + dataframe3[1,3]
-
+```
+数字型数据相加。
+```{r}
 list4 <- list(z1="6", z2=42, z3="49", z4=126)
+```
+储存时记录数据类型与相应数据。
+```{r}
 list4[[2]]+list4[[4]]
+```
+数字型数据相加。
+```
 list4[2]+list4[4]
 ```
+储存类型不一致，调取符号必须为`[[]]`。  
 
-3. Working with functions and operators.
-    a. The colon operator will create a sequence of integers in order. It is a special case of the function `seq()` which you saw earlier in this assignment. Using the help command `?seq` to learn about the function, design an expression that will give you the sequence of numbers from 1 to 10000 in increments of 372. Design another that will give you a sequence between 1 and 10000 that is exactly 50 numbers in length.
-    b. The function `rep()` repeats a vector some number of times. Explain the difference between `rep(1:3, times=3) and rep(1:3, each=3).
+3. Working with functions and operators.  
+a. The colon operator will create a sequence of integers in order. It is a special case of the function `seq()` which you saw earlier in this assignment. Using the help command `?seq` to learn about the function, design an expression that will give you the sequence of numbers from 1 to 10000 in increments of 372. Design another that will give you a sequence between 1 and 10000 that is exactly 50 numbers in length.
 ```{r}
-
+seq(from = 1,to = 10000,by = 372)
+seq(from = 1,to = 10000,length.out = 50)
 ```
+b. The function `rep()` repeats a vector some number of times. Explain the difference between `rep(1:3, times=3) and rep(1:3, each=3).
+```{r}
+rep(1:3,times=3)
+rep(1:3,each=3)
+```
+第一行代码代表将向量整体按序重复3次，第二行代码代表在向量原序下每个元素分别重复3次，形成新的向量。
+
 MB.Ch1.2. The orings data frame gives data on the damage that had occurred in US space shuttle launches prior to the disastrous Challenger launch of 28 January 1986. The observations in rows 1, 2, 4, 11, 13, and 18 were included in the pre-launch charts used in deciding whether to proceed with the launch, while remaining rows were omitted.
 
 Create a new data frame by extracting these rows from orings, and plot total incidents against temperature for this new data frame. Obtain a similar plot for the full data set.
 ```{r}
-
+plot(Total~Temperature, data = orings[c(1,2,4,11,13,18),]) 
+# the observations included in the pre-launch charts
+plot(Total~Temperature, data = orings)
 ```
+
 MB.Ch1.4. For the data frame ais (DAAG package)
 
 (a) Use the function str() to get information on each of the columns. Determine whether any of the columns hold missing values.
 ```{r}
-
+ais_str <- str(ais)
+anyNA(ais_str)
 ```
+数据无缺省。
 
 (b) Make a table that shows the numbers of males and females for each different sport. In which sports is there a large imbalance (e.g., by a factor of more than 2:1) in the numbers of the two sexes?
 ```{r}
-
+ais_pr <- table(sex = ais$sex,sport=ais$sport)
+ais_pr[,ais_pr[1,]*1.0/ais_pr[2,]>=2|ais_pr[1,]*1.0/ais_pr[2,]<=0.5]
 ```
+由结果知，以2：1为失衡标准，运动`Gym，Netball，T_Sprnt， W_Polo`性别失衡。
+
 MB.Ch1.6.Create a data frame called Manitoba.lakes that contains the lake’s elevation (in meters above sea level) and area (in square kilometers) as listed below. Assign the names of the lakes using the row.names() function.
                elevation  area
 Winnipeg             217 24387
@@ -76,35 +143,46 @@ Gods                 178  1151
 Cross                207   755
 Playgreen            217   657
 ```{r}
-
+Manitoba.lakes <-matrix(c(217,254,248,254,253,227,178,207,217,24387,5374,4624, 2247,1353,1223,1151,755,657),ncol=2)%>%
+    data.frame()
+colnames(Manitoba.lakes)<-c("elevation","area")
+row.names(Manitoba.lakes)<-c("Winnipeg","Winnipegosis","Manitoba","SouthernIndian","Cedar","Island","Gods","Cross","Playgreen")
 ```
 
-(a) Use the following code to plot log2(area) versus elevation, adding labeling infor- mation (there is an extreme value of area that makes a logarithmic scale pretty much essential):
+(a) Use the following code to plot log2(area) versus elevation, adding labeling information (there is an extreme value of area that makes a logarithmic scale pretty much essential):
 ```{r}
 attach(Manitoba.lakes)
-plot(log2(area) ~ elevation, pch=16, xlim=c(170,280))
+plot(log2(area) ~ elevation, pch=16, xlim=c(170,280),sub="y轴为log2后的面积数值，点上显示湖名及其对应实际面积。")
 # NB: Doubling the area increases log2(area) by 1.0
-text(log2(area) ~ elevation, labels=row.names(Manitoba.lakes), pos=4)
-text(log2(area) ~ elevation, labels=area, pos=2) 
+text(log2(area) ~ elevation, labels = row.names(Manitoba.lakes), pos = 4)
+text(log2(area) ~ elevation, labels = area, pos=2) 
 title("Manitoba’s Largest Lakes")
 ```
+
 Devise captions that explain the labeling on the points and on the y-axis. It will be necessary to explain how distances on the scale relate to changes in area.
 
 (b) Repeat the plot and associated labeling, now plotting area versus elevation, but specifying log="y" in order to obtain a logarithmic y-scale.
 ```{r}
-plot(area ~ elevation, pch=16, xlim=c(170,280), ylog=T)
+plot(area ~ elevation, log="y",pch=16, xlim=c(170,280), ylog=T)
 text(area ~ elevation, labels=row.names(Manitoba.lakes), pos=4, ylog=T)
 text(area ~ elevation, labels=area, pos=2, ylog=T) 
 title("Manitoba’s Largest Lakes")
 
 ```
+
+显然，对数处理之后获得的关系图在保证相对位置的情况下更清晰。
+
 MB.Ch1.7. Look up the help page for the R function dotchart(). Use this function to display the areas of the Manitoba lakes (a) on a linear scale, and (b) on a logarithmic scale. Add, in each case, suitable labeling information.
 ```{r}
-dotchart(log2(area))
+dotchart(area,xlab = "area",labels=rownames(Manitoba.lakes),main="Manitoba’s Largest Lakes") 
+```
+
+```{r}
+dotchart(log2(area),xlab = "log2(area)",labels=rownames(Manitoba.lakes),main="Manitoba’s Largest Lakes") 
 ```
 
 MB.Ch1.8. Using the sum() function, obtain a lower bound for the area of Manitoba covered by water.
 ```{r}
-
+sum(Manitoba.lakes[,2])
 ```
-
+将曼尼托巴区域最大的湖面积累加，得出曼尼托巴区域被水覆盖的区域最小面积为41771.
