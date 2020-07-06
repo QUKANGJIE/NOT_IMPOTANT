@@ -1,0 +1,21 @@
+---
+title: "DAY4"
+author: "QUKANGJIE"
+date: "2020/7/9"
+output: html_document
+---
+
+```{r setup, message=F,include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## Learn 'dplyr' using gapminder datest
+```{r}
+gapminder<- read_csv('data/gapminder.csv')
+```
+
+```{r}
+BL<- filter(gapminder,country=='Brazil',year>=1987,year<=2007)
+mean(BL$lifeExp)
+```

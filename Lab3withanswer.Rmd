@@ -1,0 +1,101 @@
+---
+title: 'Lab 3: Data Wrangling on Soccer Tournament Data'
+date: 'July 9, 2020'
+output:
+  pdf_document: default
+  html_document: default
+---
+```{r setup, message = F, include=FALSE}
+library(tidyverse)
+```
+
+Soccer tournament data wrangling
+--------------------------
+Read the dataset of football games.
+```{r}
+d <- read_csv("data/results.csv")
+```
+
+1. Select variables `date`, `home_team` and `away_team`.
+```{r}
+d %>% select(date, home_team, away_team)
+```
+2. Subset games with **Brazil** as the home team.
+```{r}
+d %>% filter(home_team == "Brazil")
+```
+
+3. Choose the games that Brazil won as the home team, and select variables `date`, `away_team` and `tournament`.
+```{r}
+d %>% filter(home_team=="Brazil", 
+         home_score - away_score > 0) %>% 
+  select(date, away_team, tournament)
+```
+
+4. Add the difference of goals, and an indicator variable called `goleada` for when the difference of goals is large,  and select what we did only for Brazil. **Hint: use `ifelse`**.
+```{r}
+d %>% 
+  
+  mutate(dif = abs(away_score - home_score),
+            
+         goleada = ifelse(dif > 5, "Goleada", "Normal  Result")) %>%
+  
+    filter(home_team=="Brazil" | away_team=="Brazil",
+                 goleada=="Goleada")
+```
+
+5. What was the largest difference in goals within these games?
+```{r}
+d %>% 
+  
+  mutate(dif = abs(away_score - home_score)) %>%
+  
+  arrange(desc(dif)) %>%
+  
+  slice(1)  
+```
+
+6. The top 5 goleadas?
+```{r}
+d %>% 
+  
+  mutate(dif = abs(away_score - home_score)) %>%
+  
+  arrange(desc(dif)) %>%
+  
+  slice(1:5) # top_n(5) here would also do the trick
+```
+7. Summary on goals scored by home teams, such as `mean` of `home_score` and `away_score`, `std`, using `group_by` and `summarise`
+```{r}
+d %>% 
+  
+  group_by(home_team) %>%
+  
+  summarise(mean_home_gols= mean(home_score, na.rm = TRUE), 
+            sd_home_gols= sd(home_score), 
+            mean_home_gols_op = mean(away_score), 
+            count=n()) %>%
+  
+  ungroup() %>%
+  
+  top_n(., 10, wt=mean_home_gols)  # note here, it does 
+                                  # not give you in order
+                                  # you can add arrange
+```
+
+8. Proportion of victories of **Brazil** on different tournaments against each opponent, for instance, **Argentina**.
+```{r}
+d %>% 
+
+  filter(home_team=="Brazil") %>%
+  
+  mutate(dif = home_score - away_score, 
+         victory = ifelse(dif>0, 1, 0)) %>%
+  
+  group_by(away_team, tournament) %>%
+  
+  summarise(mean_victory_brazil= mean(victory, na.rm = TRUE), 
+            number_games=n()) %>%
+  
+  filter(away_team=="Argentina")
+```

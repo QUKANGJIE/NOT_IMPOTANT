@@ -1,0 +1,64 @@
+---
+title: 'Lab 7: Division and Power in the 1%'
+date: "July 13, 2020"
+output: pdf_document
+---
+```{r setup, message = F, include=FALSE}
+library(tidyverse)
+```
+
+***Agenda:*** Importing and manipulating data; writing functions to estimate parameters; writing functions to check model fit.
+
+We continue to look at the very rich by turning to a more systematic data source than Forbes magazine, the World Top Incomes Database hosted by the Paris School of Economics [https://wid.world]. This is derived from income tax reports, and compiles information about the very highest incomes in various countries over time, trying as hard as possible to produce numbers that are comparable across time and space.
+For most countries in most time periods, the upper end of the income distribution roughly follows a Pareto distribution, with probability density function.
+\begin{equation}
+f(x) = \frac{(a-1)}{x_{\mbox{min}}}\left(\frac{x}{x_{\mbox{min}}}\right)^{-a}
+\label{paretodensity}
+\end{equation}
+for incomes $x \geq x_{\mbox{min}}$. (Typically, $x_{\mbox{min}}$ is large enough that only the richest 3–4% of the population falls above it.) As the Pareto exponent a gets smaller, the distribution of income becomes more unequal, that is, more of the population’s total income is concentrated among the very richest people.
+The proportion of people whose income is at least xmin whose income is also at or above any level $w \geq x_{\mbox{min}}$ is thus
+\begin{equation}
+\mbox{Pr}(x\geq w) = \int_w^\infty f(x)dx = \int_w^\infty \frac{(a-1)}{x_{\mbox{min}}}\left(\frac{x}{x_{\mbox{min}}}\right)^{-a} dx = \left(\frac{w}{x_{\mbox{min}}}\right)^{-a+1} 
+\label{paretoprob}
+\end{equation}
+
+We will use this to estimate how income inequality changed in the US over the last hundred
+years or so. (Whether the trends are good or bad or a mix is beyond our scope here.)  For this lab session, we have extracted the relevant data and saved it as `wtid-report.csv`.
+
+Part I
+----------
+
+1. Open the file and make a new variable containing only the year, `P99`,`P99.5` and `P99.9` variables; these are the income levels which put one at the 99th, 99.5th, and 99.9th, percentile of income. What was `P99` in 1972? `P99.5` in 1942? `P99.9` in 1922?
+You must identify these using your code rather than looking up the values manually. (You may want to modify the column names to make some of them shorter.)
+```{r}
+
+```
+
+2. Plot the three percentile levels against time. Make sure the axes are labeled appropriately, and in particular that the horizontal axis is labeled with years between 1913 and 2012, not just numbers from 1 to 100.
+
+3. One can show from the earlier equations that one can estimate the exponent by the formula
+\begin{equation}
+a = 1- \frac{\log 10}{\log P99/P99.9} 
+\label{formula}
+\end{equation}
+
+Write a function, `exponent.est_ratio()` which takes in values for `P99` and `P99.9`, and returns the value of a implied by (\eqref{formula}). Check that if `P99=1e6` and `P99.9=1e7`, your function returns an $a$ of 2.
+
+Part II
+----------
+
+4. Estimate a for each year in the data set, using your `exponent.est_ratio()` function. If the function was written properly, you should not need to use a loop. Plot your estimate of a over time. Do the results look reasonable? (Remember that smaller exponents mean more income inequality.)
+
+5. There were 160,681 households in the top 0.1% in the US in 2012. Using your estimated value of a for 2012, calculate approximately how many households had an income of over $50 million.
+
+6. The logic leading to (\eqref{formula}) also implies that
+\begin{equation}
+\left(\frac{P99.5}{P99.9}\right)^{-a+1}=5 
+\nonumber
+\end{equation}
+
+Write a function which takes `P99.5`, `P99.9` and $a$, and calculates the left-hand side of that equation. Plot the values for each year, using the data and your estimates of the exponent. Add a horizontal line with vertical coordinate 5. How good is the fit?
+
+7. By parallel reasoning, we should have $(P90/P95)^{-a+1}=2$. Repeat the previous step with this formula. How would you describe this fit compared to the previous ones?
+(Note: the formula in (3) is not the best way to estimate $a$, but it is one of the simplest.)
+
